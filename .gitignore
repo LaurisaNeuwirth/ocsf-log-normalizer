@@ -172,3 +172,47 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+# Byte-compiled / cache files
+__pycache__/
+*.py[cod]
+*.so
+
+# Virtual environment folders
+.venv/
+env/
+venv/
+ENV/
+
+# Environment variables
+.env
+.env.*
+
+# Distribution / packaging
+*.egg-info/
+dist/
+build/
+
+# Logs
+logs_raw/*.log
+logs_normalized/*.log
+*.log
+
+# Test outputs and coverage
+coverage.xml
+.cache/
+.pytest_cache/
+htmlcov/
+
+# VS Code settings (local only)
+.vscode/
+
+# Jupyter notebooks checkpoints
+.ipynb_checkpoints/
+
+# Mac & Linux
+.DS_Store
+Thumbs.db
+
+# GitHub Codespaces and Codespaces-specific files
+*.code-workspace
+.devcontainer/
