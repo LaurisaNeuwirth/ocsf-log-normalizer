@@ -1,0 +1,11 @@
+{
+    "timestamp": "2025-04-02T18:30:00Z",
+    "event_type": "threat_detected",
+    "severity": "medium",
+    "host_ip": "192.168.1.10",
+    "host_name": "host1",
+    "user": "jdoe",
+    "threat_name": "Trojan.GenericKD.32768",
+    "file_path": "/home/jdoe/downloads/malware.exe",
+    "action_taken": "quarantined"
+  }

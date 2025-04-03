@@ -1,0 +1,10 @@
+{
+    "time": "2025-04-02T16:45:00+00:00",
+    "remote_addr": "203.0.113.45",
+    "remote_user": "-",
+    "request": "GET /index.html HTTP/1.1",
+    "status": 200,
+    "body_bytes_sent": 1024,
+    "http_referer": "http://referrer.com/",
+    "http_user_agent": "Mozilla/5.0"
+  }
