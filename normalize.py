@@ -7,7 +7,21 @@ input_file = Path("logs_raw/okta_login_failure.json")
 output_file = Path("logs_normalized/okta_login_failure_ocsf.json")
 
 def normalize_okta_log(raw):
+
+    """
+    Maps raw Okta login fields to OCSF Authentication.Login format:
+
+    Raw Field                     → OCSF Field
+    ----------------------------------------------------
+    eventTime                    → time
+    actor.email                  → user.name
+    outcome                      → status
+    client.ipAddress             → src_endpoint.ip
+    Entire raw event             → metadata.original_event
+    """
+
     """Normalize a raw Okta login event into OCSF format."""
+   
     return {
         "time": raw["eventTime"],
         "class_uid": 1001,
