@@ -1,0 +1,17 @@
+{
+    "eventTime": "2025-04-02T12:34:56Z",
+    "eventType": "user.session.start",
+    "actor": {
+      "type": "User",
+      "email": "alice@example.com"
+    },
+    "outcome": "FAILURE",
+    "client": {
+      "ipAddress": "203.0.113.12",
+      "userAgent": {
+        "rawUserAgent": "Mozilla/5.0"
+      }
+    },
+    "app": "Okta Dashboard",
+    "uuid": "abc123-def456"
+  }
