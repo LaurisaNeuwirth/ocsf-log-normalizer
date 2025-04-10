@@ -1,4 +1,6 @@
 # ocsf-log-normalizer
+
+NOTE: I am in the midst of creating this and exoect to be done by April 13.
 Normalize security logs to the OCSF format, validate schema consistency, and detect schema drift over time.
 
 This project ingests raw security logs (e.g., Okta, CrowdStrike, AWS CloudTrail), normalizes them into the [Open Cybersecurity Schema Framework (OCSF)](https://ocsf.io/) format, and validates them using JSON Schemas.
