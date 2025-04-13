@@ -1,0 +1,23 @@
+{
+  "category": "web",
+  "class_uid": 8000,
+  "class_name": "Web activity",
+  "event_type": "access",
+  "event_uid": 800000,
+  "event_time": "2025-04-02T16:45:00+00:00",
+  "severity_id": 1,
+  "status_code": 200,
+  "response_size": 1024,
+  "src_endpoint": {
+    "ip": "203.0.113.45"
+  },
+  "http_request": {
+    "method": "GET",
+    "url": "/index.html",
+    "referrer": "http://referrer.com/",
+    "user_agent": "Mozilla/5.0"
+  },
+  "metadata": {
+    "source": "nginx"
+  }
+}
