@@ -37,4 +37,4 @@ def main():
             validate_log_file
 
 if __name__ == "__main__":
-    main(
+    main()
