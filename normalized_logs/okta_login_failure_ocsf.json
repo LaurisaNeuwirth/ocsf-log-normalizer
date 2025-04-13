@@ -1,0 +1,39 @@
+{
+  "time": "2025-04-02T12:34:56Z",
+  "class_uid": 1001,
+  "class_name": "Authentication",
+  "category_uid": 1,
+  "category_name": "Authentication",
+  "type_uid": 1,
+  "type_name": "Login",
+  "user": {
+    "uid": "00u1abcdXYZ",
+    "name": "jdoe",
+    "email_addr": "jdoe@example.com"
+},
+  "status": "Failure",
+  "src_endpoint": {
+    "ip": "203.0.113.12"
+  },
+  "metadata": {
+    "vendor_name": "Okta",
+    "product_name": "Okta Identity Cloud",
+    "original_event": {
+      "eventTime": "2025-04-02T12:34:56Z",
+      "eventType": "user.session.start",
+      "actor": {
+        "type": "User",
+        "email": "alice@example.com"
+      },
+      "outcome": "FAILURE",
+      "client": {
+        "ipAddress": "203.0.113.12",
+        "userAgent": {
+          "rawUserAgent": "Mozilla/5.0"
+        }
+      },
+      "app": "Okta Dashboard",
+      "uuid": "abc123-def456"
+    }
+  }
+}
