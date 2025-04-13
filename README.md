@@ -41,6 +41,15 @@ This project aims to help security teams:
 | `6`            | Configuration       | Policy or setting changes               |
 | `7`            | Audit               | Admin or privileged user activity       |
 
+## Example Normalized Logs
+
+The following example files show how raw logs from different sources are transformed into [OCSF](https://schema.ocsf.io/) format:
+
+- [NGINX Access Log](normalized_logs/nginx_access_login_success_ocsf.json)
+- [Okta Login Failure](normalized_logs/okta_login_failure_ocsf.json)
+- [AWS CloudTrail Console Login](normalized_logs/aws_cloudtrail_console_login_success_ocsf.json)
+- [Bitdefender Threat Detected](normalized_logs/bitdefender_syslog_threatdetected_ocsf.json)
+
 ##  ToDo
 
 - Sample logs from Okta, AWS, Defender
