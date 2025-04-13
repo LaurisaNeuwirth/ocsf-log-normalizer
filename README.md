@@ -28,6 +28,19 @@ This project aims to help security teams:
 
 ---
 
+## Normalization Reference
+## OCSF Category UID Reference
+
+| `category_uid` | Category Name       | Description                             |
+|----------------|---------------------|-----------------------------------------|
+| `1`            | Authentication      | Login events, session starts/failures   |
+| `2`            | Network Activity    | Web traffic, firewall, proxy logs       |
+| `3`            | Threat Detection    | Malware detections, EDR alerts          |
+| `4`            | DLP                 | Data exfiltration, file block logs      |
+| `5`            | Resource Access     | File access, database reads/writes      |
+| `6`            | Configuration       | Policy or setting changes               |
+| `7`            | Audit               | Admin or privileged user activity       |
+
 ##  ToDo
 
 - Sample logs from Okta, AWS, Defender
