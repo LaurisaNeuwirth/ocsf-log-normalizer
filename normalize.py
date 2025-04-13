@@ -150,6 +150,15 @@ def normalize_zeek_conn(raw_log):
         }
     }
 
+DISPATCHER = {
+    "AWS_cloudtrail_console_login_success.json": normalize_cloudtrail_login_success,
+    "okta_login_failure.json": normalize_okta_log,
+    "bitdefender_syslog_threatdetected.json": normalize_bitdefender_threat_detected,
+    "nginx_access_login_success.json": normalize_nginx,
+    "zeek_http_request_success.json": normalize_zeek_conn,
+}
+
+
 def main():
     print("Running normalize.py...")
     print("Files in raw logs directory:", os.listdir(RAW_DIR))
@@ -159,44 +168,17 @@ def main():
         print(f"Checking file: {filename}")
         print(f"DEBUG: filename == {repr(filename)}")
 
-        if filename == "AWS_cloudtrail_console_login_success.json":
-            print(f"Normalizing {filename}...")
-            with open(filepath) as f:
-                raw_data = json.load(f)
-            normalized = normalize_cloudtrail_login_success(raw_data)
-            output_file = os.path.join(NORMALIZED_DIR, "aws_cloudtrail_console_login_success_ocsf.json")
-
-        elif filename == "okta_login_failure.json":
-            print(f"Normalizing {filename}...")
-            with open(filepath) as f:
-                raw_data = json.load(f)
-            normalized = normalize_okta_log(raw_data)
-            output_file = os.path.join(NORMALIZED_DIR, "okta_login_failure_ocsf.json")
-
-        elif filename == "bitdefender_syslog_threatdetected.json":
-            print(f"Normalizing {filename}...")
-            with open(filepath) as f:
-                raw_data = json.load(f)
-            normalized = normalize_bitdefender_threat_detected(raw_data)
-            output_file = os.path.join(NORMALIZED_DIR, "bitdefender_syslog_threatdetected_ocsf.json")
-
-        elif filename == "nginx_access_login_success.json":
-            print(f"Normalizing {filename}...")
-            with open(filepath) as f:
-                raw_data = json.load(f)
-            normalized = normalize_nginx(raw_data)
-            output_file = os.path.join(NORMALIZED_DIR, "nginx_access_login_success_ocsf.json")
-
-        elif filename == "zeek_http_request_success.json":
-            print(f"Normalizing {filename}...")
-            with open(filepath) as f:
-                raw_data = json.load(f)
-            normalized = normalize_zeek_conn(raw_data)
-            output_file = os.path.join(NORMALIZED_DIR, "zeek_http_request_success_ocsf.json")
-
-        else:
+        normalizer = DISPATCHER.get(filename)
+        if not normalizer:
             print(f"No match found for: {filename}")
             continue
+
+        print(f"Normalizing {filename}...")
+        with open(filepath) as f:
+            raw_data = json.load(f)
+
+        normalized = normalizer(raw_data)
+        output_file = os.path.join(NORMALIZED_DIR, filename.replace(".json", "_ocsf.json"))
 
         # Save the normalized log
         with open(output_file, "w") as out:
