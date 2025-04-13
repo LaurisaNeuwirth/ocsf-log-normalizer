@@ -1,6 +1,7 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema#",
     "title": "Authentication",
+    "description": "OCSF schema for normalized authentication logs such as Okta or AWS CloudTrail login events.",
     "type": "object",
     "properties": {
       "class_uid": { "type": "integer" },
