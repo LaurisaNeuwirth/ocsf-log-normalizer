@@ -1,0 +1,25 @@
+{
+  "class_uid": 3004,
+  "category_uid": 3,
+  "metadata": {
+    "product": "Bitdefender",
+    "vendor_name": "Bitdefender",
+    "version": "syslog"
+  },
+  "time": "2025-04-02T18:30:00Z",
+  "severity": "Medium",
+  "status": "Success",
+  "user": {
+    "uid": "jdoe",
+    "name": "jdoe"
+  },
+  "src_endpoint": {
+    "ip": "192.168.1.10",
+    "hostname": "host1"
+  },
+  "malware": {
+    "name": "Trojan.GenericKD.32768",
+    "path": "/home/jdoe/downloads/malware.exe"
+  },
+  "disposition": "quarantined"
+}

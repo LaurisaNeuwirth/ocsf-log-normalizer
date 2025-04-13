@@ -1,0 +1,21 @@
+{
+  "class_uid": 1001,
+  "category_uid": 1,
+  "metadata": {
+    "product": "AWS CloudTrail",
+    "vendor_name": "Amazon",
+    "version": "1.05"
+  },
+  "time": "2025-04-02T14:22:33Z",
+  "status": "Success",
+  "user": {
+    "uid": "arn:aws:iam::123456789012:user/bob",
+    "name": "bob"
+  },
+  "auth_protocol": "ConsoleLogin",
+  "src_endpoint": {
+    "ip": "198.51.100.24"
+  },
+  "user_agent": "Mozilla/5.0",
+  "mfa_used": true
+}

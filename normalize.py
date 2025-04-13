@@ -2,28 +2,22 @@ import json
 from pathlib import Path
 from datetime import datetime
 
+import os
+
+RAW_DIR = "logs_raw"
+NORMALIZED_DIR = "normalized_logs"
+
 # Input and output files
 input_file = Path("logs_raw/okta_login_failure.json")
 output_file = Path("logs_normalized/okta_login_failure_ocsf.json")
 
-def normalize_okta_log(raw):
-
+def normalize_okta_log(raw_log):
     """
-    Maps raw Okta login fields to OCSF Authentication.Login format:
-
-    Raw Field                     → OCSF Field
-    ----------------------------------------------------
-    eventTime                    → time
-    actor.email                  → user.name
-    outcome                      → status
-    client.ipAddress             → src_endpoint.ip
-    Entire raw event             → metadata.original_event
+    Normalize a raw Okta login event into OCSF format.
     """
 
-    """Normalize a raw Okta login event into OCSF format."""
-   
     return {
-        "time": raw["eventTime"],
+        "time": raw_log["eventTime"],
         "class_uid": 1001,
         "class_name": "Authentication",
         "category_uid": 1,
@@ -31,34 +25,113 @@ def normalize_okta_log(raw):
         "type_uid": 1,
         "type_name": "Login",
         "user": {
-            "name": raw["actor"]["email"]
+            "uid": raw_log["actor"]["email"],
+            "name": raw_log["actor"]["email"],
+            "email_addr": raw_log["actor"]["email"]
         },
-        "status": "Failure" if raw["outcome"] == "FAILURE" else "Success",
+        "status": "Failure" if raw_log["outcome"] == "FAILURE" else "Success",
         "src_endpoint": {
-            "ip": raw["client"]["ipAddress"]
+            "ip": raw_log["client"]["ipAddress"]
         },
         "metadata": {
             "vendor_name": "Okta",
             "product_name": "Okta Identity Cloud",
-            "original_event": raw
+            "original_event": raw_log
         }
     }
 
+def normalize_bitdefender_threat_detected(raw_log):
+    return {
+        "class_uid": 3004,
+        "category_uid": 3,
+        "metadata": {
+            "product": "Bitdefender",
+            "vendor_name": "Bitdefender",
+            "version": "syslog"
+        },
+        "time": raw_log.get("timestamp"),
+        "severity": raw_log.get("severity").capitalize(),
+        "status": "Success",
+        "user": {
+            "uid": raw_log.get("user"),
+            "name": raw_log.get("user")
+        },
+        "src_endpoint": {
+            "ip": raw_log.get("host_ip"),
+            "hostname": raw_log.get("host_name")
+        },
+        "malware": {
+            "name": raw_log.get("threat_name"),
+            "path": raw_log.get("file_path")
+        },
+        "disposition": raw_log.get("action_taken")
+    }
+
+def normalize_cloudtrail_login_success(raw_log):
+    return {
+        "class_uid": 1001,
+        "category_uid": 1,
+        "metadata": {
+            "product": "AWS CloudTrail",
+            "vendor_name": "Amazon",
+            "version": raw_log.get("eventVersion")
+        },
+        "time": raw_log.get("eventTime"),
+        "status": raw_log.get("responseElements", {}).get("ConsoleLogin"),
+        "user": {
+            "uid": raw_log.get("userIdentity", {}).get("arn"),
+            "name": raw_log.get("userIdentity", {}).get("userName")
+        },
+        "auth_protocol": raw_log.get("eventName"),
+        "src_endpoint": {
+            "ip": raw_log.get("sourceIPAddress")
+        },
+        "user_agent": raw_log.get("userAgent"),
+        "mfa_used": raw_log.get("additionalEventData", {}).get("MFAUsed") == "Yes"
+    }
+
+print("Running normalize.py...")
+print("Files in raw logs directory:", os.listdir(RAW_DIR))
+
 def main():
-    if not input_file.exists():
-        print(f"[ERROR] File not found: {input_file}")
-        return
+    print("Running normalize.py...")
+    print("Files in raw logs directory:", os.listdir(RAW_DIR))
 
-    with input_file.open() as f:
-        raw_event = json.load(f)
+    for filename in os.listdir(RAW_DIR):
+        filepath = os.path.join(RAW_DIR, filename)
+        print(f"Checking file: {filename}")
+        print(f"DEBUG: filename == {repr(filename)}")
 
-    normalized_event = normalize_okta_log(raw_event)
+        if filename == "AWS_cloudtrail_console_login_success.json":
+            print(f"Normalizing {filename}...")
+            with open(filepath) as f:
+                raw_data = json.load(f)
+            normalized = normalize_cloudtrail_login_success(raw_data)
+            output_file = os.path.join(NORMALIZED_DIR, "aws_cloudtrail_console_login_success_ocsf.json")
 
-    output_file.parent.mkdir(parents=True, exist_ok=True)
-    with output_file.open("w") as f:
-        json.dump(normalized_event, f, indent=2)
+        elif filename == "okta_login_failure.json":
+            print(f"Normalizing {filename}...")
+            with open(filepath) as f:
+                raw_data = json.load(f)
+            normalized = normalize_okta_log(raw_data)
+            output_file = os.path.join(NORMALIZED_DIR, "okta_login_failure_ocsf.json")
 
-    print(f"[✅] Normalized event written to: {output_file}")
+        elif filename == "bitdefender_syslog_threatdetected.json":
+            print(f"Normalizing {filename}...")
+            with open(filepath) as f:
+                raw_data = json.load(f)
+            normalized = normalize_bitdefender_threat_detected(raw_data)
+            output_file = os.path.join(NORMALIZED_DIR, "bitdefender_syslog_threatdetected_ocsf.json")
+
+        else:
+            print(f"No match found for: {filename}")
+            continue
+
+        # Save the normalized log
+        with open(output_file, "w") as out:
+            json.dump(normalized, out, indent=2)
+        print(f"Saved normalized log to {output_file}") 
+
 
 if __name__ == "__main__":
     main()

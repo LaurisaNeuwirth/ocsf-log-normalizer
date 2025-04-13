@@ -7,10 +7,10 @@
   "type_uid": 1,
   "type_name": "Login",
   "user": {
-    "uid": "00u1abcdXYZ",
-    "name": "jdoe",
-    "email_addr": "jdoe@example.com"
-},
+    "uid": "alice@example.com",
+    "name": "alice@example.com",
+    "email_addr": "alice@example.com"
+  },
   "status": "Failure",
   "src_endpoint": {
     "ip": "203.0.113.12"
