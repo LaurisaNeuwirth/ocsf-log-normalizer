@@ -7,18 +7,10 @@ from jsonschema import validate, ValidationError
 # Path to normalized logs
 NORMALIZED_DIR = "normalized_logs"
 
-# Temporary placeholder schema – we’ll replace this with a real one next
-OCSF_SCHEMA = {
-    "type": "object",
-    "properties": {
-        "class_uid": {"type": "integer"},
-        "category_uid": {"type": "integer"},
-        "metadata": {"type": "object"},
-        "time": {"type": "string", "format": "date-time"},
-        "status": {"type": "string"},
-    },
-    "required": ["class_uid", "category_uid", "metadata", "time", "status"]
-}
+# Load real OCSF schema for authentication events
+with open("schemas/authentication.json") as schema_file:
+    OCSF_SCHEMA = json.load(schema_file)
+
 
 def validate_log_file(filepath, schema):
     with open(filepath, 'r') as f:
