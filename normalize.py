@@ -122,6 +122,34 @@ def normalize_nginx(log):
 print("Running normalize.py...")
 print("Files in raw logs directory:", os.listdir(RAW_DIR))
 
+def normalize_zeek_conn(raw_log):
+    """
+    Normalize a Zeek connection log into OCSF format (network_activity).
+    """
+    return {
+        "class_uid": 2001,
+        "class_name": "Network Activity",
+        "category_uid": 2,
+        "category_name": "Network",
+        "activity_name": "Connection",
+        "time": raw_log.get("ts"),
+        "src_endpoint": {
+            "ip": raw_log.get("id.orig_h"),
+            "port": raw_log.get("id.orig_p"),
+        },
+        "dst_endpoint": {
+            "ip": raw_log.get("id.resp_h"),
+            "port": raw_log.get("id.resp_p"),
+        },
+        "protocol_name": raw_log.get("proto"),
+        "direction": raw_log.get("conn_state"),
+        "metadata": {
+            "vendor_name": "Zeek",
+            "product_name": "Zeek Network Monitor",
+            "original_event": raw_log
+        }
+    }
+
 def main():
     print("Running normalize.py...")
     print("Files in raw logs directory:", os.listdir(RAW_DIR))
@@ -158,6 +186,13 @@ def main():
                 raw_data = json.load(f)
             normalized = normalize_nginx(raw_data)
             output_file = os.path.join(NORMALIZED_DIR, "nginx_access_login_success_ocsf.json")
+
+        elif filename == "zeek_http_request_success.json":
+            print(f"Normalizing {filename}...")
+            with open(filepath) as f:
+                raw_data = json.load(f)
+            normalized = normalize_zeek_conn(raw_data)
+            output_file = os.path.join(NORMALIZED_DIR, "zeek_http_request_success_ocsf.json")
 
         else:
             print(f"No match found for: {filename}")

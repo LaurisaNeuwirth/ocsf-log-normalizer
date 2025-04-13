@@ -1,0 +1,39 @@
+{
+  "class_uid": 2001,
+  "class_name": "Network Activity",
+  "category_uid": 2,
+  "category_name": "Network",
+  "activity_name": "Connection",
+  "time": 1616682345.123456,
+  "src_endpoint": {
+    "ip": "192.168.1.100",
+    "port": 45678
+  },
+  "dst_endpoint": {
+    "ip": "93.184.216.34",
+    "port": 80
+  },
+  "protocol_name": null,
+  "direction": null,
+  "metadata": {
+    "vendor_name": "Zeek",
+    "product_name": "Zeek Network Monitor",
+    "original_event": {
+      "ts": 1616682345.123456,
+      "uid": "C8Tful1TvM3Zf5xSj",
+      "id.orig_h": "192.168.1.100",
+      "id.orig_p": 45678,
+      "id.resp_h": "93.184.216.34",
+      "id.resp_p": 80,
+      "method": "GET",
+      "host": "example.com",
+      "uri": "/index.html",
+      "referrer": "http://referrer.com/",
+      "user_agent": "Mozilla/5.0",
+      "request_body_len": 0,
+      "response_body_len": 1024,
+      "status_code": 200,
+      "status_msg": "OK"
+    }
+  }
+}
