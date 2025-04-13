@@ -1,0 +1,48 @@
+# validate.py
+
+import json
+import os
+from jsonschema import validate, ValidationError
+
+# Path to normalized logs
+NORMALIZED_DIR = "normalized_logs"
+
+# Temporary placeholder schema – we’ll replace this with a real one next
+OCSF_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "class_uid": {"type": "integer"},
+        "category_uid": {"type": "integer"},
+        "metadata": {"type": "object"},
+        "time": {"type": "string", "format": "date-time"},
+        "status": {"type": "string"},
+    },
+    "required": ["class_uid", "category_uid", "metadata", "time", "status"]
+}
+
+def validate_log_file(filepath, schema):
+    with open(filepath, 'r') as f:
+        data = json.load(f)
+
+    if isinstance(data, list):
+        for entry in data:
+            validate_single(entry, schema, filepath)
+    else:
+        validate_single(data, schema, filepath)
+
+def validate_single(log, schema, filepath):
+    try:
+        validate(instance=log, schema=schema)
+        print(f"[PASS] {filepath}")
+    except ValidationError as e:
+        print(f"[FAIL] {filepath}")
+        print(f"Reason: {e.message}")
+
+def main():
+    for filename in os.listdir(NORMALIZED_DIR):
+        if filename.endswith(".json"):
+            filepath = os.path.join(NORMALIZED_DIR, filename)
+            validate_log_file
+
+if __name__ == "__main__":
+    main(
