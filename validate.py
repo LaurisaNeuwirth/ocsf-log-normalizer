@@ -33,8 +33,9 @@ def validate_single(log, schema, filepath):
 def main():
     for filename in os.listdir(NORMALIZED_DIR):
         if filename.endswith(".json"):
+            print(f"Validating {filename}...")
             filepath = os.path.join(NORMALIZED_DIR, filename)
-            validate_log_file
+            validate_log_file(filepath, OCSF_SCHEMA)
 
 if __name__ == "__main__":
     main()
