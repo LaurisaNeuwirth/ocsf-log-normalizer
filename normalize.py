@@ -90,6 +90,35 @@ def normalize_cloudtrail_login_success(raw_log):
         "mfa_used": raw_log.get("additionalEventData", {}).get("MFAUsed") == "Yes"
     }
 
+def normalize_nginx(log):
+    request_parts = log.get("request", "").split()
+    http_method = request_parts[0] if len(request_parts) >= 1 else None
+    url = request_parts[1] if len(request_parts) >= 2 else None
+
+    return {
+        "category": "web",
+        "class_uid": 8000,
+        "class_name": "Web activity",
+        "event_type": "access",
+        "event_uid": 800000,
+        "event_time": log.get("time"),
+        "severity_id": 1,
+        "status_code": log.get("status"),
+        "response_size": log.get("body_bytes_sent"),
+        "src_endpoint": {
+            "ip": log.get("remote_addr")
+        },
+        "http_request": {
+            "method": http_method,
+            "url": url,
+            "referrer": log.get("http_referer"),
+            "user_agent": log.get("http_user_agent")
+        },
+        "metadata": {
+            "source": "nginx"
+        }
+    }
+
 print("Running normalize.py...")
 print("Files in raw logs directory:", os.listdir(RAW_DIR))
 
@@ -122,6 +151,13 @@ def main():
                 raw_data = json.load(f)
             normalized = normalize_bitdefender_threat_detected(raw_data)
             output_file = os.path.join(NORMALIZED_DIR, "bitdefender_syslog_threatdetected_ocsf.json")
+
+        elif filename == "nginx_access_login_success.json":
+            print(f"Normalizing {filename}...")
+            with open(filepath) as f:
+                raw_data = json.load(f)
+            normalized = normalize_nginx(raw_data)
+            output_file = os.path.join(NORMALIZED_DIR, "nginx_access_login_success_ocsf.json")
 
         else:
             print(f"No match found for: {filename}")
