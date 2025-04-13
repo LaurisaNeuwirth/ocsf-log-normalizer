@@ -216,3 +216,12 @@ Thumbs.db
 # GitHub Codespaces and Codespaces-specific files
 *.code-workspace
 .devcontainer/
+
+# Ignore all normalized logs
+logs_normalized/*
+
+# Keep specific examples
+!logs_normalized/nginx_access_login_success_ocsf.json
+!logs_normalized/okta_login_failure_ocsf.json
+!logs_normalized/aws_cloudtrail_console_login_success_ocsf.json
+!logs_normalized/bitdefender_syslog_threatdetected_ocsf.json
