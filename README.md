@@ -1,9 +1,10 @@
 # ocsf-log-normalizer
 
-NOTE: I am in the midst of creating this and exoect to be done by April 13.
-Normalize security logs to the OCSF format, validate schema consistency, and detect schema drift over time.
+> Normalize security logs to the OCSF format, validate schema consistency, and detect schema drift over time.
 
 This project ingests raw security logs (e.g., Okta, CrowdStrike, AWS CloudTrail), normalizes them into the [Open Cybersecurity Schema Framework (OCSF)](https://ocsf.io/) format, and validates them using JSON Schemas.
+
+---
 
 ## Features
 
@@ -16,19 +17,21 @@ This project ingests raw security logs (e.g., Okta, CrowdStrike, AWS CloudTrail)
 ---
 
 ## Project Structure
+ocsf-log-normalizer/ ├── logs_raw/ # Raw input logs (sampled or real) ├── normalized_logs/ # Normalized logs in OCSF format ├── schemas/ # JSON Schema files for OCSF validation ├── tests/ # Schema validation and drift detection scripts ├── dashboard/ # Optional dashboard scripts (e.g. pandas or Streamlit) ├── normalize.py # Raw log → OCSF normalizer ├── validate.py # Validates logs against schema ├── drift_check.py # Detects schema changes over time └── .github/workflows/ # GitHub Actions CI setup
 
-ocsf-log-normalizer/ ├── logs_raw/ # Raw input logs (sampled or real) ├── logs_normalized/ # Normalized logs in OCSF format ├── schemas/ # JSON Schema files for OCSF validation ├── tests/ # Schema validation and drift detection scripts ├── dashboard/ # Optional dashboard scripts (e.g. pandas or Streamlit) ├── normalize.py # Raw log → OCSF normalizer ├── validate.py # Validates logs against schema ├── drift_check.py # Detects schema changes over time └── .github/workflows/ # GitHub Actions CI setup
 
-##  Goals
+---
+
+## Goals
 
 This project aims to help security teams:
+
 - Create a consistent format for logs across vendors
 - Catch silent log schema changes from upstream sources
 - Build OCSF-compliant pipelines that are testable and reliable
 
 ---
 
-## Normalization Reference
 ## OCSF Category UID Reference
 
 | `category_uid` | Category Name       | Description                             |
@@ -41,18 +44,65 @@ This project aims to help security teams:
 | `6`            | Configuration       | Policy or setting changes               |
 | `7`            | Audit               | Admin or privileged user activity       |
 
+---
+
 ## Example Normalized Logs
 
 The following example files show how raw logs from different sources are transformed into [OCSF](https://schema.ocsf.io/) format:
 
-- [NGINX Access Log](normalized_logs/nginx_access_login_success_ocsf.json)
-- [Okta Login Failure](normalized_logs/okta_login_failure_ocsf.json)
-- [AWS CloudTrail Console Login](normalized_logs/aws_cloudtrail_console_login_success_ocsf.json)
-- [Bitdefender Threat Detected](normalized_logs/bitdefender_syslog_threatdetected_ocsf.json)
+- [`nginx_access_login_success_ocsf.json`](normalized_logs/nginx_access_login_success_ocsf.json)
+- [`okta_login_failure_ocsf.json`](normalized_logs/okta_login_failure_ocsf.json)
+- [`aws_cloudtrail_console_login_success_ocsf.json`](normalized_logs/aws_cloudtrail_console_login_success_ocsf.json)
+- [`bitdefender_syslog_threatdetected_ocsf.json`](normalized_logs/bitdefender_syslog_threatdetected_ocsf.json)
+- [`zeek_http_request_success_ocsf.json`](normalized_logs/zeek_http_request_success_ocsf.json)
 
-##  ToDo
+---
 
-- Sample logs from Okta, AWS, Defender
-- GitHub Actions for automatic schema validation
-- Visual dashboards from normalized logs
+## Dispatcher Pattern for Log Normalization
 
+This project uses a **dispatcher** pattern in `normalize.py` to route logs to the correct normalization function based on filename.
+
+## What’s a Dispatcher?
+
+A dispatcher is a dictionary that maps inputs (like filenames) to functions. It replaces long `if/elif` chains with a clean, scalable structure.
+
+**Instead of this:**
+```python
+if filename == "okta.json":
+    normalize_okta()
+elif filename == "zeek.json":
+    normalize_zeek()
+
+We use this:
+DISPATCH = {
+    "okta.json": normalize_okta,
+    "zeek.json": normalize_zeek,
+}
+DISPATCH[filename](raw_log)
+
+Why It’s Better
+Easier to extend: just add one function + one dictionary key
+Cleaner and more readable than nested if/elif
+Test-friendly: each log type is modular and isolated
+Scales well across many log types
+
+## Testing & Schema Validation
+
+This project uses pytest for automated validation and jsonschema for enforcing OCSF compliance.
+
+What It Does:
+Loads each normalized log in normalized_logs/
+Maps it to the correct schema in schemas/ via filename
+Validates required fields, data types, and formats
+Fails early if schema drift or invalid data is detected
+
+Run the tests:
+pytest tests/
+
+ ## ToDo
+
+ Sample logs from Okta, AWS, Defender, Zeek
+ Unit test suite for schema validation
+ Dispatcher pattern for log routing
+ GitHub Actions for automatic schema validation
+ Visual dashboards from normalized logs
