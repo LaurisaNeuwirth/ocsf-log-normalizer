@@ -1,6 +1,7 @@
 import json
 from pathlib import Path
-from datetime import datetime
+from datetime import datetime, timezone
+
 
 import os
 
@@ -123,26 +124,23 @@ print("Running normalize.py...")
 print("Files in raw logs directory:", os.listdir(RAW_DIR))
 
 def normalize_zeek_conn(raw_log):
-    """
-    Normalize a Zeek connection log into OCSF format (network_activity).
-    """
     return {
         "class_uid": 2001,
         "class_name": "Network Activity",
         "category_uid": 2,
         "category_name": "Network",
         "activity_name": "Connection",
-        "time": raw_log.get("ts"),
+        "time": datetime.fromtimestamp(float(raw_log.get("ts")), tz=timezone.utc).isoformat(),
         "src_endpoint": {
             "ip": raw_log.get("id.orig_h"),
-            "port": raw_log.get("id.orig_p"),
+            "port": raw_log.get("id.orig_p")
         },
         "dst_endpoint": {
             "ip": raw_log.get("id.resp_h"),
-            "port": raw_log.get("id.resp_p"),
+            "port": raw_log.get("id.resp_p")
         },
-        "protocol_name": raw_log.get("proto"),
-        "direction": raw_log.get("conn_state"),
+        "protocol_name": str(raw_log.get("proto") or "unknown"),
+        "direction": str(raw_log.get("conn_state") or "unknown"),
         "metadata": {
             "vendor_name": "Zeek",
             "product_name": "Zeek Network Monitor",

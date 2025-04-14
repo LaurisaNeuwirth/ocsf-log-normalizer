@@ -1,0 +1,36 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Web Activity",
+    "description": "OCSF schema for normalized web access logs like Nginx",
+    "type": "object",
+    "required": ["class_uid", "category", "event_time", "src_endpoint", "http_request", "status_code"],
+    "properties": {
+      "class_uid": { "type": "integer" },
+      "class_name": { "type": "string" },
+      "category": { "type": "string" },
+      "event_type": { "type": "string" },
+      "event_uid": { "type": "integer" },
+      "event_time": { "type": "string" },
+      "status_code": { "type": "integer" },
+      "response_size": { "type": "integer" },
+      "src_endpoint": {
+        "type": "object",
+        "properties": {
+          "ip": { "type": "string" }
+        }
+      },
+      "http_request": {
+        "type": "object",
+        "properties": {
+          "method": { "type": "string" },
+          "url": { "type": "string" },
+          "referrer": { "type": "string" },
+          "user_agent": { "type": "string" }
+        }
+      },
+      "metadata": {
+        "type": "object"
+      }
+    }
+  }
+  

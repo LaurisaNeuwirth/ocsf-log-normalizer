@@ -4,7 +4,7 @@
   "category_uid": 2,
   "category_name": "Network",
   "activity_name": "Connection",
-  "time": 1616682345.123456,
+  "time": "2021-03-25T14:25:45.123456+00:00",
   "src_endpoint": {
     "ip": "192.168.1.100",
     "port": 45678
@@ -13,8 +13,8 @@
     "ip": "93.184.216.34",
     "port": 80
   },
-  "protocol_name": null,
-  "direction": null,
+  "protocol_name": "unknown",
+  "direction": "unknown",
   "metadata": {
     "vendor_name": "Zeek",
     "product_name": "Zeek Network Monitor",

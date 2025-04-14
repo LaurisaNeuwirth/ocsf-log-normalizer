@@ -1,0 +1,36 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "OCSF Network Activity",
+    "type": "object",
+    "required": ["class_uid", "category_uid", "time", "src_endpoint", "dst_endpoint", "protocol_name"],
+    "properties": {
+      "class_uid": { "type": "integer" },
+      "class_name": { "type": "string" },
+      "category_uid": { "type": "integer" },
+      "category_name": { "type": "string" },
+      "activity_name": { "type": "string" },
+      "time": { "type": "string" },
+      "src_endpoint": {
+        "type": "object",
+        "properties": {
+          "ip": { "type": "string" },
+          "port": { "type": "integer" }
+        },
+        "required": ["ip", "port"]
+      },
+      "dst_endpoint": {
+        "type": "object",
+        "properties": {
+          "ip": { "type": "string" },
+          "port": { "type": "integer" }
+        },
+        "required": ["ip", "port"]
+      },
+      "protocol_name": { "type": "string" },
+      "direction": { "type": "string" },
+      "metadata": {
+        "type": "object"
+      }
+    }
+  }
+  
