@@ -86,6 +86,22 @@ Cleaner and more readable than nested if/elif
 Test-friendly: each log type is modular and isolated
 Scales well across many log types
 
+## Log Ingestion
+This project uses simulated log ingestion by loading public sample logs from common security tools and services. These samples represent real-world formats but are stored locally in logs_raw/ for easy testing and development.
+
+Currently supported log types:
+
+Source	Format	Log Type
+Okta	JSON	Login failures, sessions
+AWS CloudTrail	JSON	Console login activity
+Zeek	Zeek TSV / JSON	HTTP and connection logs
+Bitdefender	Simulated JSON	Threat detections
+NGINX	Access log (text)	Web traffic
+
+Logs are sourced from vendor documentation, test datasets, or simulated where real data isn't available.
+
+In future versions, this project may include live ingestion from APIs or S3.
+
 ## Testing & Schema Validation
 
 This project uses pytest for automated validation and jsonschema for enforcing OCSF compliance.
