@@ -220,8 +220,9 @@ Thumbs.db
 # Ignore all normalized logs
 logs_normalized/*
 
-# Keep specific examples
+# Keep specific examples so Git history includes one polished example per source, and any future runs that generate temp files won’t clutter the repo.
 !logs_normalized/nginx_access_login_success_ocsf.json
 !logs_normalized/okta_login_failure_ocsf.json
 !logs_normalized/aws_cloudtrail_console_login_success_ocsf.json
 !logs_normalized/bitdefender_syslog_threatdetected_ocsf.json
+!logs_normalized/zeek_http_request_success_ocsf.json
