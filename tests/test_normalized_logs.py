@@ -3,12 +3,11 @@ import json
 import pytest
 from jsonschema import validate, ValidationError
 
-# Mapping each normalized log to its schema
 SCHEMA_MAPPING = {
     "okta_login_failure_ocsf.json": "Authentication.json",
     "aws_cloudtrail_console_login_success_ocsf.json": "Authentication.json",
-    "bitdefender_syslog_threatdetected_ocsf.json": "Malware.json",  # You can create or adjust
-    "nginx_access_login_success_ocsf.json": "WebActivity.json",     # Optional schema
+    "bitdefender_syslog_threatdetected_ocsf.json": "Malware.json",
+    "nginx_access_login_success_ocsf.json": "WebActivity.json",
     "zeek_http_request_success_ocsf.json": "network_activity_schema.json",
 }
 
@@ -29,4 +28,8 @@ def test_normalized_log_against_schema(filename):
     try:
         validate(instance=data, schema=schema)
     except ValidationError as e:
-        pytest.fail(f"Schema validation failed for {filename}: {e.message}")
+        error_path = " -> ".join([str(p) for p in e.path]) or "(root)"
+        pytest.fail(f"\n❌ Validation failed for {filename}\n"
+                    f"📍 Path: {error_path}\n"
+                    f"🧾 Message: {e.message}\n"
+                    f"🔎 Invalid value: {e.instance}")
