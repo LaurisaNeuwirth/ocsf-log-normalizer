@@ -2,7 +2,7 @@
 
 > Normalize security logs to the OCSF format, validate schema consistency, and detect schema drift over time.
 
-This project ingests raw security logs (e.g., Okta, CrowdStrike, AWS CloudTrail), normalizes them into the [Open Cybersecurity Schema Framework (OCSF)](https://ocsf.io/) format, and validates them using JSON Schemas.
+This project ingests raw security logs from  AWS CloudTrail, Bitdefender, Nginx, Okta and Zeek, normalizes them into the Open Cybersecurity Schema Framework (OCSF)](https://ocsf.io/) format, and validates them using JSON Schemas.
 
 ---
 
@@ -117,8 +117,6 @@ pytest tests/
 
  ## ToDo
 
- Sample logs from Okta, AWS, Defender, Zeek
- Unit test suite for schema validation
- Dispatcher pattern for log routing
+ Upgraded logs from Okta, AWS, Defender, Zeek
  GitHub Actions for automatic schema validation
  Visual dashboards from normalized logs
