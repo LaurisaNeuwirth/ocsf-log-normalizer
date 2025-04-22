@@ -6,10 +6,11 @@ from jsonschema import validate, ValidationError
 # Mapping each normalized log to its schema
 SCHEMA_MAPPING = {
     "okta_login_failure_ocsf.json": "Authentication.json",
+    "okta_failure_ocsf.json": "Authentication.json",
     "aws_cloudtrail_console_login_success_ocsf.json": "Authentication.json",
     "bitdefender_syslog_threatdetected_ocsf.json": "Malware.json",
     "nginx_access_login_success_ocsf.json": "WebActivity.json",
-    "zeek_http_request_success_ocsf.json": "network_activity_schema.json",
+    "zeek_http_request_success_ocsf.json": "network_activity_schema.json"
 }
 
 # Required fields for each schema

@@ -13,30 +13,41 @@ input_file = Path("logs_raw/okta_login_failure.json")
 output_file = Path("logs_normalized/okta_login_failure_ocsf.json")
 
 def normalize_okta_log(raw_log):
-    """
-    Normalize a raw Okta login event into OCSF format.
-    """
+    user_email = (
+        raw_log.get("actor", {}).get("email") or
+        raw_log.get("actor", {}).get("alternateId")
+    )
+
+    event_time = raw_log.get("eventTime") or raw_log.get("published")
 
     return {
-        "time": raw_log["eventTime"],
         "class_uid": 1001,
         "class_name": "Authentication",
         "category_uid": 1,
         "category_name": "Authentication",
         "type_uid": 1,
         "type_name": "Login",
+        "event_name": "User login failed",
+        "severity": 3,
+        "time": event_time,
+        "timestamp": event_time,
+        "status": "Failure" if raw_log.get("outcome") == "FAILURE" or raw_log.get("outcome", {}).get("result") == "FAILURE" else "Success",
         "user": {
-            "uid": raw_log["actor"]["email"],
-            "name": raw_log["actor"]["email"],
-            "email_addr": raw_log["actor"]["email"]
+            "uid": user_email,
+            "name": user_email,
+            "email_addr": user_email
         },
-        "status": "Failure" if raw_log["outcome"] == "FAILURE" else "Success",
         "src_endpoint": {
-            "ip": raw_log["client"]["ipAddress"]
+            "ip": raw_log.get("client", {}).get("ipAddress"),
+            "user_agent": {
+                "original": raw_log.get("client", {}).get("userAgent", {}).get("rawUserAgent")
+            }
         },
         "metadata": {
             "vendor_name": "Okta",
             "product_name": "Okta Identity Cloud",
+            "app": raw_log.get("app"),
+            "uuid": raw_log.get("uuid"),
             "original_event": raw_log
         }
     }
@@ -151,6 +162,7 @@ def normalize_zeek_conn(raw_log):
 DISPATCHER = {
     "AWS_cloudtrail_console_login_success.json": normalize_cloudtrail_login_success,
     "okta_login_failure.json": normalize_okta_log,
+    "okta_failure_raw.json": normalize_okta_log,
     "bitdefender_syslog_threatdetected.json": normalize_bitdefender_threat_detected,
     "nginx_access_login_success.json": normalize_nginx,
     "zeek_http_request_success.json": normalize_zeek_conn,
@@ -186,3 +198,9 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+def dispatch_normalizer(filename, raw_log):
+    normalizer = DISPATCHER.get(filename)
+    if not normalizer:
+        raise ValueError(f"No normalizer found for: {filename}")
+    return normalizer(raw_log)
