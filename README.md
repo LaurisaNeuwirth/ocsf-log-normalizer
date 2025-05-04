@@ -4,7 +4,13 @@
 
 This project ingests raw security logs from  AWS CloudTrail, Bitdefender, Nginx, Okta and Zeek, normalizes them into the Open Cybersecurity Schema Framework (OCSF)](https://ocsf.io/) format, and validates them using JSON Schemas.
 
----
+## Goals
+
+This project aims to help security teams:
+
+- Create a consistent format for logs across 5 commonly use cybersecurity vendors
+- Catch silent log schema changes from upstream sources
+- Build OCSF-compliant pipelines that are testable and reliable
 
 ## Features
 
@@ -14,23 +20,18 @@ This project ingests raw security logs from  AWS CloudTrail, Bitdefender, Nginx,
 - Optional: Generates dashboards or metrics from normalized logs
 - Built with GitHub Codespaces and Python
 
----
-
 ## Project Structure
-ocsf-log-normalizer/ ├── logs_raw/ # Raw input logs (sampled or real) ├── normalized_logs/ # Normalized logs in OCSF format ├── schemas/ # JSON Schema files for OCSF validation ├── tests/ # Schema validation and drift detection scripts ├── dashboard/ # Optional dashboard scripts (e.g. pandas or Streamlit) ├── normalize.py # Raw log → OCSF normalizer ├── validate.py # Validates logs against schema ├── drift_check.py # Detects schema changes over time └── .github/workflows/ # GitHub Actions CI setup
+ocsf-log-normalizer/
+├── logs_raw/               # Raw input logs (sampled)
+├── normalized_logs/        # Logs normalized into OCSF format
+├── schemas/                # JSON Schema files for OCSF validation
+├── tests/                  # Unit tests for schema compliance and drift detection
+├── dashboard/              # To Do: dashboards using pandas or Streamlit
+├── normalize.py            # Main normalization script (raw → OCSF)
+├── validate.py             # Validates logs against the appropriate schema
+├── drift_check.py          # Detects schema drift over time
+└── .github/workflows/      # GitHub Actions CI for test automation
 
-
----
-
-## Goals
-
-This project aims to help security teams:
-
-- Create a consistent format for logs across vendors
-- Catch silent log schema changes from upstream sources
-- Build OCSF-compliant pipelines that are testable and reliable
-
----
 
 ## OCSF Category UID Reference
 
@@ -60,9 +61,7 @@ The following example files show how raw logs from different sources are transfo
 
 ## Dispatcher Pattern for Log Normalization
 
-This project uses a **dispatcher** pattern in `normalize.py` to route logs to the correct normalization function based on filename.
-
-## What’s a Dispatcher?
+This project uses a dispatcher pattern in `normalize.py` to route logs to the correct normalization function based on filename.
 
 A dispatcher is a dictionary that maps inputs (like filenames) to functions. It replaces long `if/elif` chains with a clean, scalable structure.
 
@@ -79,24 +78,30 @@ DISPATCH = {
     "zeek.json": normalize_zeek,
 }
 DISPATCH[filename](raw_log)
+```
 
 Why It’s Better
-Easier to extend: just add one function + one dictionary key
-Cleaner and more readable than nested if/elif
-Test-friendly: each log type is modular and isolated
-Scales well across many log types
+- Easier to extend: just add one function + one dictionary key
+- Cleaner and more readable than nested if/elif
+- Test-friendly: each log type is modular and isolated
+- Scales well across many log types
 
 ## Log Ingestion
 This project uses simulated log ingestion by loading public sample logs from common security tools and services. These samples represent real-world formats but are stored locally in logs_raw/ for easy testing and development.
 
-Currently supported log types:
 
-Source	Format	Log Type
-Okta	JSON	Login failures, sessions
-AWS CloudTrail	JSON	Console login activity
-Zeek	Zeek TSV / JSON	HTTP and connection logs
-Bitdefender	Simulated JSON	Threat detections
-NGINX	Access log (text)	Web traffic
+## Currently Supported Log Types
+
+| Source         | Format            | Log Types                             |
+|----------------|-------------------|----------------------------------------|
+| Okta           | JSON              | Login failures, session events         |
+| AWS CloudTrail | JSON              | Console login activity                 |
+| Zeek           | JSON (converted)  | HTTP requests, connection logs         |
+| Bitdefender    | Simulated JSON    | Threat detection events                |
+| NGINX          | Access log (text) | Web traffic (e.g., successful logins)  |
+``
+
+
 
 Logs are sourced from vendor documentation, test datasets, or simulated where real data isn't available.
 
@@ -117,6 +122,8 @@ pytest tests/
 
  ## ToDo
 
+ Update README to explain the schma drift detection
  Upgraded logs from Okta, AWS, Defender, Zeek
  GitHub Actions for automatic schema validation
- Visual dashboards from normalized logs
+ Visual dashboards from normalized logs with links to normalized logs on each run
+ Update to ingest looping to simulate live ingestion
